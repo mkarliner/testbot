@@ -1,0 +1,74 @@
+{
+  "name": "testsiftbot",
+  "display-name": "Testsiftbot Sift",
+  "description": "Test of new Bot SDK",
+  "author": "",
+  "version": "1.0.0",
+  "icon": "assets/blueprint.svg",
+  "interfaces": {
+    "summary": {
+      "controller": "dist/js/controller.umd-es2015.min.js"
+    }
+  },
+  "dag": {
+    "inputs": {
+      "botfwk":{
+        "all": {
+          "filter" : {
+            "conditions" : [
+              {
+                "type" : "message:direct_mention,direct_message,mention"
+              },
+              {
+                "text" : {
+                  "regexp" : {
+                    "flags" : "i",
+                    "pattern" : ".*"
+                  }
+                }
+              }
+            ],
+            "operator" : "AND"
+          }
+        },
+        "actions": {
+          "filter": {
+            "conditions": [
+              {
+                "actions": {}
+              }
+            ]
+          }
+        }
+      }
+    },
+    "nodes": [
+      {
+        "#": "Slack bot",
+        "implementation": {
+          "javascript": "server/slackbot.js"
+        },
+        "input": {
+          "bucket": "all",
+          "lookup": [{
+            "bucket": "server",
+            "key": "slack/bot_access_token"
+
+          }]
+        },
+        "outputs": {
+          "messages": {}
+        }
+      }
+    ],
+    "stores": {
+     "messages": {
+        "key$schema": "string"
+      },
+      "server": {
+        "import": "_server"
+      }
+    },
+    "outputs": {}
+  }
+}
